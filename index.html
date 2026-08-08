@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Telegram Login – GitHub Demo</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&display=swap" rel="stylesheet" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+      padding: 1rem;
+    }
+    .card {
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(20px);
+      border-radius: 2.5rem;
+      padding: 3rem 2.5rem;
+      width: 100%;
+      max-width: 440px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      text-align: center;
+    }
+    .card h1 { font-size: 2rem; font-weight: 600; color: #fff; margin-bottom: 0.25rem; }
+    .card p { color: rgba(255, 255, 255, 0.6); font-size: 0.95rem; margin-bottom: 2rem; }
+    #telegram-login-container { display: flex; justify-content: center; margin: 1rem 0; }
+    .footer-note { margin-top: 2rem; color: rgba(255, 255, 255, 0.2); font-size: 0.75rem; }
+    #user-info {
+      margin-top: 2rem;
+      padding: 1.5rem;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 1.5rem;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: #fff;
+      display: none;
+      text-align: left;
+    }
+    #user-info.visible { display: block; animation: fadeUp 0.4s ease; }
+    #user-info img {
+      border-radius: 50%;
+      width: 64px;
+      height: 64px;
+      float: left;
+      margin-right: 1rem;
+      border: 2px solid #29a0e0;
+    }
+    #user-info .name { font-weight: 600; font-size: 1.2rem; }
+    #user-info .username { color: rgba(255, 255, 255, 0.5); font-size: 0.9rem; }
+    #user-info .id { color: rgba(255, 255, 255, 0.3); font-size: 0.8rem; margin-top: 0.25rem; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>🚀 Welcome</h1>
+    <p>Sign in with your Telegram account</p>
+
+    <div id="telegram-login-container">
+      <!-- The widget will appear here -->
+      <script async src="https://telegram.org/js/telegram-widget.js?22"
+              data-telegram-login="log_intg_bot"   <!-- REPLACE with your bot's exact username -->
+              data-size="large"
+              data-radius="16"
+              data-auth-url="https://your-vercel-app.vercel.app/api/auth">
+      </script>
+    </div>
+
+    <!-- This will be shown after successful login (redirected from backend) -->
+    <div id="user-info">
+      <img id="avatar" src="" alt="avatar" />
+      <div class="name" id="fullName"></div>
+      <div class="username" id="username"></div>
+      <div class="id" id="userId"></div>
+    </div>
+    <div class="footer-note">Secured by Telegram OAuth</div>
+  </div>
+
+  <!-- Optional: if your backend redirects back with user data as query params -->
+  <script>
+    // Example: display user data from URL after redirect
+    (function() {
+      const params = new URLSearchParams(window.location.search);
+      const id = params.get('id');
+      if (id) {
+        const info = document.getElementById('user-info');
+        info.classList.add('visible');
+        document.getElementById('fullName').textContent = params.get('first_name') + (params.get('last_name') ? ' ' + params.get('last_name') : '');
+        document.getElementById('username').textContent = '@' + params.get('username');
+        document.getElementById('userId').textContent = 'ID: ' + id;
+        document.getElementById('avatar').src = params.get('photo_url') || 'https://via.placeholder.com/64';
+        document.getElementById('telegram-login-container').style.display = 'none';
+      }
+    })();
+  </script>
+</body>
+</html>
